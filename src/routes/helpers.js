@@ -1,17 +1,42 @@
-<script lang="ts">
-	// @ts-nocheck
+// ts-nocheck
 
-	import { ethers, providers } from 'ethers';
-	import { onMount } from 'svelte';
+import { writable } from 'svelte/store';
+import { ethers } from 'ethers';
 
-	
+const config = {
+	MUMBAI_TESTNET: 80001
+};
 
-	let signer: any;
-	let provider: any;
-	let message = 'Not connected to Metamask';
-	let chainId;
+const messageType = {
+	NOT_CONNECTED: 'Not connected to Metamask.',
+	LOADING: 'Loading...',
+	LOADED: 'loaded',
+	ERROR: 'Internal server error'
+};
 
-	async function getChainData() {
+const baseState = {
+	isMetamaskInstalled: false,
+	isWrongNetwork: false,
+	isLocked: false,
+	isConnected: false,
+	message: messageType.LOADING, 
+
+	signer: undefined, 
+	provider: undefined, 
+};
+
+class MetamaskController {
+	#appStore = writable({
+		...baseState
+	});
+
+	constructor() {
+		this.store = {
+			subscribe: this.#appStore.subscribe
+		};
+	}
+
+	async getChainData() {
 		let network = await provider.getNetwork();
 		chainId = network.chainId;
 		console.log(`Network: ${network.chainId}`);
@@ -75,30 +100,6 @@
 			console.log(switchError);
 		}
 	}
+}
 
-	$: chainId == 137 && message == 'Connected to Metamask'
-		? console.log('Matic')
-		: console.log('Changing Networks');
-
-	let onDevice = false;
-	onMount(() => {
-		onDevice = true;
-		connect();
-
-		ethereum.on('accountsChanged', connect);
-		ethereum.on('chainChanged', getChainData);
-	});
-</script>
-
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-<button on:click={connect}>{message}</button>
-<button on:click={changeChainID}>
-	{#if chainId != 137 && message == 'Connected to Metamask'}
-		Change Network to Matic
-	{:else if message == 'Not connected to Metamask'}
-		Connect to Metamask
-	{:else}
-		Connected
-	{/if}
-</button>
+export default new MetamaskController();
