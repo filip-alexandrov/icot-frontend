@@ -1,7 +1,5 @@
 <script>
-	import VoteOption from '$lib/subcomponents/VoteOption.svelte';
-	import VoteDetails from '$lib/subcomponents/VoteDetails.svelte';
-	import VoteButton from '$lib/subcomponents/VoteButton.svelte';
+	import ProposeDetails from '$lib/subcomponents/ProposeDetails.svelte';
 
 	let voteDetails = {
 		description:
@@ -19,14 +17,8 @@
 </script>
 
 <div class="card">
-	<div class="header">Voting</div>
-	<VoteDetails {voteDetails} />
-	<VoteOption option={'For'} selected={true} percentage={50} />
-	<div class="vote-spacing" />
-	<VoteOption option={'Against'} selected={false} percentage={20} />
-	<div class="vote-spacing" />
-	<VoteOption option={'Abstain'} selected={false} percentage={30} />
-	<VoteButton quorum={voteDetails.quorum} participation={voteDetails.participation} />
+	<div class="header">Propose</div>
+	<ProposeDetails/>
 </div>
 
 
@@ -45,9 +37,5 @@
 		font-family: 'Khula', sans-serif;
 		font-size: 50px;
 		position: relative;
-	}
-
-	.vote-spacing {
-		height: 15px;
 	}
 </style>

@@ -97,7 +97,7 @@
         border: none; 
         border-radius: 10px;
         color: #263238; 
-        position: fixed; 
+        position: absolute; 
         right:  100px;
         top: 40px; 
         font-family: 'Poppins', sans-serif;

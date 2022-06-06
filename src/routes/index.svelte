@@ -1,10 +1,15 @@
 <script>
 	import ConnectButton from '$lib/components/ConnectButton.svelte';
 	import VoteCard from '$lib/components/VoteCard.svelte';
+	import ProposeCard from '$lib/components/ProposeCard.svelte';
 </script>
 
 <div class="title">Voting Manager</div>
-<VoteCard /> 
+<div class="main">
+	<VoteCard />
+	<div class="spacing" />
+	<ProposeCard />
+</div>
 <ConnectButton />
 
 <style>
@@ -24,5 +29,14 @@
 		top: 30px;
 		left: 70px;
 		cursor: pointer;
+	}
+	.main {
+		width: 100vw;
+		display: flex;
+		justify-content: center;
+	}
+
+	.spacing {
+		width: 70px;
 	}
 </style>
