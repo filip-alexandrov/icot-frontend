@@ -1,42 +1,44 @@
 <script>
 	export let voteDetails = {
-		description: 'I am transfering a token to my address.',
+		description: 'I am transfering a token to my address. ',
 		transactions: [
 			{
 				address: '0x86693B6E574163505e9fDfC93A7ebBe48b71dE54',
 				value: '3 ETH',
-				function: 'transfer(0x86693B6E574163505e9fDfC93A7ebBe48b71dE54, 12)'
+				function: 'transfer(0x86693B6E574163505e9fDfC93A7ebBe48b71dE54, 12). '
 			}
 		]
-	}; 
+	};
 </script>
 
 {#each voteDetails.transactions as transaction}
 	<div class="target-address">
 		<div class="target-address-header">Target address:</div>
-		<input type="text" bind:value={transaction.address} />
+		<div class="transaction-detail">
+			{transaction.address}
+		</div>
 	</div>
 
 	<div class="value-to-send">
 		<div class="value-to-send-header">Value to send:</div>
-		<input type="text" bind:value={transaction.value} />
+		<div class="transaction-detail">
+			{transaction.value}
+		</div>
 	</div>
 
 	<div class="function-call">
 		<div class="function-call-header">Function call:</div>
-		<input type="text" bind:value={transaction.function} />
+		<div class="transaction-detail">
+			{transaction.function}
+		</div>
 	</div>
 {/each}
 
 <div class="description">
 	<div class="description-header">Description:</div>
-	<textarea
-    bind:value={voteDetails.description}
-		name=""
-		id=""
-		cols="30"
-		rows="10"
-	/>
+	<div class="transaction-detail">
+		{voteDetails.description}
+	</div>
 </div>
 
 <style>
@@ -46,15 +48,15 @@
 	.description {
 		color: #263238;
 		font-family: 'Poppins', sans-serif;
-		font-weight: 600;
-		font-size: 20px;
+		font-weight: 400;
+		font-size: 15px;
 		position: relative;
 	}
 
-	.target-address input,
-	.value-to-send input,
-	.function-call input,
-	.description textarea {
+	.target-address .transaction-detail,
+	.value-to-send .transaction-detail,
+	.function-call .transaction-detail,
+	.description .transaction-detail {
 		background-color: #263238;
 		border: none;
 		color: #f8f8f8;
@@ -66,7 +68,18 @@
 		box-sizing: border-box;
 		font-family: 'Poppins', sans-serif;
 		letter-spacing: 0.5px;
-        pointer-events: none;
+		overflow: auto;
+		white-space: nowrap;
+	}
+	.description .transaction-detail {
+		white-space: normal;
+	}
+
+	.target-address .transaction-detail::-webkit-scrollbar,
+	.value-to-send .transaction-detail::-webkit-scrollbar,
+	.function-call .transaction-detail::-webkit-scrollbar,
+	.description .transaction-detail::-webkit-scrollbar {
+		display: none;
 	}
 
 	input:focus,
@@ -89,10 +102,10 @@
 		font-weight: 400;
 	}
 
-	.value-to-send input {
+	.value-to-send .transaction-detail {
 		width: 18%;
 	}
-	.description textarea {
+	.description .transaction-detail {
 		height: 110px;
 	}
 </style>

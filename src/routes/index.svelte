@@ -5,7 +5,7 @@
 	import VoteButton from '$lib/components/VoteButton.svelte'
 
 	let voteDetails = {
-		description: 'I am transfering a token to my address.',
+		description: 'I am transfering a token to my address. Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur asperiores, mollitia consequatur laboriosam non labore aliquam corporis ex, ipsum harum nostrum quas dicta quidem veritatis doloremque sint ullam iure magnam optio. Distinctio necessitatibus nostrum minus reiciendis, porro quibusdam saepe possimus quisquam qui voluptas dolor voluptatem accusantium, perferendis optio architecto in odio sed quod natus suscipit nihil soluta incidunt deserunt ad. Quidem, esse! Rerum cumque nostrum ipsa enim sunt omnis, unde quos in perspiciatis dignissimos exercitationem vel illo velit culpa quia maiores reiciendis consequatur. Nesciunt, maxime adipisci eaque obcaecati tenetur odit eius ducimus, quas recusandae alias dolores perspiciatis assumenda quae ipsa.',
 		transactions: [
 			{
 				address: '0x86693B6E574163505e9fDfC93A7ebBe48b71dE54',
