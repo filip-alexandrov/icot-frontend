@@ -1,6 +1,5 @@
 <script>
     // @ts-nocheck
-	import JsonViewer from '$lib/components/JsonViewer.svelte';
 	import MetamaskController from '$lib/controllers/MetamaskController.js';
 	import { onMount } from 'svelte';
 

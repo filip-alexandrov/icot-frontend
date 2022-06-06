@@ -1,104 +1,93 @@
-<script lang="ts">
-	// @ts-nocheck
+<script>
+	import ConnectButton from '$lib/components/ConnectButton.svelte';
+	import VoteOption from '$lib/components/VoteOption.svelte';
+	import VoteDetails from '$lib/components/VoteDetails.svelte';
+	import VoteButton from '$lib/components/VoteButton.svelte'
 
-	import { ethers, providers } from 'ethers';
-	import { onMount } from 'svelte';
-
-	
-
-	let signer: any;
-	let provider: any;
-	let message = 'Not connected to Metamask';
-	let chainId;
-
-	async function getChainData() {
-		let network = await provider.getNetwork();
-		chainId = network.chainId;
-		console.log(`Network: ${network.chainId}`);
-	}
-
-	async function handleAccountsChanged() {
-		provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-		await provider.send('eth_requestAccounts', []);
-		signer = provider.getSigner();
-
-		message = 'Connected to Metamask';
-		getChainData();
-
-		// console.log('Account:', await signer.getAddress());
-	}
-
-	async function connect() {
-		ethereum
-			.request({ method: 'eth_requestAccounts' })
-			.then(handleAccountsChanged)
-			.catch((err) => {
-				if (err.code === 4001) {
-					message = 'Not connected to Metamask';
-				} else {
-					message = 'Not connected to Metamask';
-					console.error(err);
-				}
-			});
-	}
-
-	async function changeChainID() {
-		try {
-			await ethereum.request({
-				method: 'wallet_switchEthereumChain',
-				params: [{ chainId: '0x89' }]
-			});
-		} catch (switchError) {
-			// This error code indicates that the chain has not been added to MetaMask.
-			if (switchError.code === 4902) {
-				try {
-					await ethereum.request({
-						method: 'wallet_addEthereumChain',
-						params: [
-							{
-								chainId: '0x89',
-								chainName: 'Matic Mainnet',
-								rpcUrls: ['https://rpc-mainnet.matic.network/'],
-								nativeCurrency: {
-									name: 'MATIC',
-									symbol: 'MATIC',
-									decimals: 18
-								},
-								blockExplorerUrls: ['https://polygonscan.com/']
-							}
-						]
-					});
-				} catch (addError) {
-					console.log(addError);
-				}
+	let voteDetails = {
+		description: 'I am transfering a token to my address.',
+		transactions: [
+			{
+				address: '0x86693B6E574163505e9fDfC93A7ebBe48b71dE54',
+				value: '3 ETH',
+				function: 'transfer(0x86693B6E574163505e9fDfC93A7ebBe48b71dE54, 12)'
 			}
-			console.log(switchError);
-		}
-	}
-
-	$: chainId == 137 && message == 'Connected to Metamask'
-		? console.log('Matic')
-		: console.log('Changing Networks');
-
-	let onDevice = false;
-	onMount(() => {
-		onDevice = true;
-		connect();
-
-		ethereum.on('accountsChanged', connect);
-		ethereum.on('chainChanged', getChainData);
-	});
+		], 
+		participation: 17, 
+		quorum: 4
+	};
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-<button on:click={connect}>{message}</button>
-<button on:click={changeChainID}>
-	{#if chainId != 137 && message == 'Connected to Metamask'}
-		Change Network to Matic
-	{:else if message == 'Not connected to Metamask'}
-		Connect to Metamask
-	{:else}
-		Connected
-	{/if}
-</button>
+<div class="title">Voting Manager</div>
+<div class="main">
+	<div class="card">
+		<div class="header">Voting</div>
+		<VoteDetails {voteDetails} />
+		<VoteOption option={'For'} selected={true} percentage={50} />
+		<div class="vote-spacing" />
+		<VoteOption option={'Against'} selected={false} percentage={20} />
+		<div class="vote-spacing" />
+		<VoteOption option={'Abstain'} selected={false} percentage={30} />
+		<VoteButton quorum={voteDetails.quorum} participation= {voteDetails.participation}/> 
+	</div>
+	<div class="spacing" />
+	<div class="card">
+		<div class="header">Voting</div>
+		<div class="target-address">
+			<div class="target-address-header">Target address:</div>
+			<input type="text" placeholder="0x94joj98r3932ur9oi" />
+		</div>
+	</div>
+</div>
+
+<ConnectButton />
+
+<style>
+	:global(body) {
+		background-color: #263238;
+		font-family: 'Poppins', sans-serif;
+		margin: 0;
+		overflow-x: hidden;
+	}
+
+	.title {
+		font-family: 'Khula', sans-serif;
+		font-weight: 400;
+		color: #db5844;
+		font-size: 40px;
+		position: relative;
+		top: 30px;
+		left: 70px;
+		cursor: pointer;
+	}
+
+	.main {
+		width: 100vw;
+		display: flex;
+		justify-content: center;
+	}
+	.card {
+		background-color: #db5844;
+		height: fit-content;
+		width: 450px;
+		position: relative;
+		top: 100px;
+		border-radius: 10px;
+		padding: 30px 30px;
+	}
+	.spacing {
+		width: 70px;
+	}
+	.header {
+		color: #263238;
+		font-family: 'Khula', sans-serif;
+		font-size: 50px;
+		position: relative;
+	}
+
+	.vote-spacing {
+		height: 15px;
+	}
+
+	
+</style>
