@@ -1,46 +1,51 @@
 <script lang="ts">
 	// @ts-nocheck
+import { setEthersProvider, ethersProvider, removeProvider } from '$lib/contracts/ethersProvider';
 
 	import { ethers, providers } from 'ethers';
 	import { onMount } from 'svelte';
 
-	let signer: any;
 	let provider: any;
 	let message = 'not connected';
-	let chainId;
+	let chainId : any;
 
+	// Gets new chain if the old is changed. 
 	async function getChainData() {
-		let network = await provider.getNetwork();
+		// If ethersProvider is empty, it's not connected to metamask
+		if(Object.entries($ethersProvider).length === 0){
+			return; 
+		}
+
+		let network = await $ethersProvider.getNetwork();
 		chainId = network.chainId;
-		console.log(`Network: ${network.chainId}`);
 	}
 
+	// On disconnect removes ethers provider and tries to set it again
 	async function handleAccountsChanged() {
-		provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-		await provider.send('eth_requestAccounts', []);
-		signer = provider.getSigner();
+		removeProvider(); 
+		await setEthersProvider(); 
 
 		message = 'connected';
 		getChainData();
 	}
 
+	// Tries to connect to metamask when no account is connected
 	async function connect() {
-		ethereum
+		window.ethereum
 			.request({ method: 'eth_requestAccounts' })
 			.then(handleAccountsChanged)
 			.catch((err) => {
-				if (err.code === 4001) {
-					message = 'not connected';
-				} else {
-					message = 'not connected';
-					console.error(err);
-				}
+				removeProvider(); 
+				message = "not connected"
+				console.error(err); 
 			});
 	}
 
+	// If account is on the wrong network, suggest changing to the polygon
+	// Provide all data, so the user won't need to search it 
 	async function changeChainID() {
 		try {
-			await ethereum.request({
+			await window.ethereum.request({
 				method: 'wallet_switchEthereumChain',
 				params: [{ chainId: '0x89' }]
 			});
@@ -48,7 +53,7 @@
 			// This error code indicates that the chain has not been added to MetaMask.
 			if (switchError.code === 4902) {
 				try {
-					await ethereum.request({
+					await window.ethereum.request({
 						method: 'wallet_addEthereumChain',
 						params: [
 							{
@@ -72,11 +77,12 @@
 		}
 	}
 
+	// Connection only possible on the client side
 	onMount(() => {
 		connect();
 
-		ethereum.on('accountsChanged', connect);
-		ethereum.on('chainChanged', getChainData);
+		window.ethereum.on('accountsChanged', connect);
+		window.ethereum.on('chainChanged', getChainData);
 	});
 </script>
 
@@ -92,7 +98,7 @@
 <style lang="scss">
     button{
         width: fit-content; 
-        height: 5vh;
+        height: 40px;
         background-color: #DB5844;
         border: none; 
         border-radius: 10px;

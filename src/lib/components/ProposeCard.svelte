@@ -26,11 +26,12 @@
 	.card {
 		background-color: #db5844;
 		height: fit-content;
-		width: 450px;
+		width: 500px;
 		position: relative;
 		top: 100px;
 		border-radius: 10px;
 		padding: 30px 30px;
+        box-sizing: border-box;
 	}
 	.header {
 		color: #263238;

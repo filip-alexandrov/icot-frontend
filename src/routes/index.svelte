@@ -2,6 +2,7 @@
 	import ConnectButton from '$lib/components/ConnectButton.svelte';
 	import VoteCard from '$lib/components/VoteCard.svelte';
 	import ProposeCard from '$lib/components/ProposeCard.svelte';
+
 </script>
 
 <div class="title">Voting Manager</div>
@@ -38,5 +39,11 @@
 
 	.spacing {
 		width: 70px;
+	}
+
+	@media only screen and (max-width: 1200px) {
+		.spacing {
+			width: 20px;
+		}
 	}
 </style>

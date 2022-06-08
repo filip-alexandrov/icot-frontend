@@ -1,17 +1,10 @@
 <script>
-	export let voteDetails = {
-		description: 'I am transfering a token to my address. ',
-		transactions: [
-			{
-				address: '0x86693B6E574163505e9fDfC93A7ebBe48b71dE54',
-				value: '3 ETH',
-				function: 'transfer(0x86693B6E574163505e9fDfC93A7ebBe48b71dE54, 12). '
-			}
-		]
-	};
+	// @ts-nocheck
+	export let transactions; 
+	export let description;
 </script>
 
-{#each voteDetails.transactions as transaction}
+{#each transactions as transaction}
 	<div class="target-address">
 		<div class="target-address-header">Target address:</div>
 		<div class="transaction-detail">
@@ -29,7 +22,7 @@
 	<div class="function-call">
 		<div class="function-call-header">Function call:</div>
 		<div class="transaction-detail">
-			{transaction.function}
+			{transaction.func}
 		</div>
 	</div>
 {/each}
@@ -37,7 +30,7 @@
 <div class="description">
 	<div class="description-header">Description:</div>
 	<div class="transaction-detail">
-		{voteDetails.description}
+		{description}
 	</div>
 </div>
 

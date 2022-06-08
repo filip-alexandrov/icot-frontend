@@ -1,32 +1,83 @@
-<script>
+<script lang="ts">
 	let propsalDetails = {
 		description: '',
 		transactions: [
 			{
 				address: '',
 				value: '',
-				function: ''
+				func: ''
 			}
 		]
 	};
 
-	$: console.log(propsalDetails)
+	let buttonText = 'add transaction';
+	let buttonIcon = 'add_circle';
+
+
+	function validateProposal(address:string, value:string, func:string) {
+		if (address == '' || value == '' || func == '') {
+			// Display info in the button
+			buttonText = 'please fill all fields';
+			buttonIcon = 'warning';
+
+			// Restore original button text
+			setTimeout(() => {
+				buttonText = 'add transaction';
+				buttonIcon = 'add_circle';
+			}, 4000);
+			return false;
+		}
+
+		if (isNaN(parseFloat(value))) {
+			buttonText = 'invalid ETH amount';
+			buttonIcon = 'warning';
+
+			setTimeout(() => {
+				buttonText = 'add transaction';
+				buttonIcon = 'add_circle';
+			}, 4000);
+			return false;
+		}
+
+		return true;
+	}
 
 	function addTransaction() {
 		let lastTransaction = propsalDetails.transactions[propsalDetails.transactions.length - 1];
+		let valid = validateProposal(lastTransaction.address, lastTransaction.value, lastTransaction.func);
+		
+		if(!valid) return; 
 
-		if (
-			lastTransaction.address == '' ||
-			lastTransaction.value == '' ||
-			lastTransaction.function == ''
-		) {
-			return;
-		}
 		propsalDetails.transactions.push({
 			address: '',
 			value: '',
-			function: ''
+			func: ''
 		});
+
+		// reassing (reactivity)
+		propsalDetails = propsalDetails;
+		return;
+	}
+
+	function removeTransaction() {
+		propsalDetails.transactions.pop();
+		propsalDetails = propsalDetails;
+	}
+
+	function submitProposal() {
+		if (propsalDetails.description == '') {
+			// description required, show warning in button
+		}
+
+		for (let transaction of propsalDetails.transactions) {
+			let valid = validateProposal(transaction.address, transaction.value, transaction.func);
+			if(!valid){
+				// display warning
+				return; 
+			}
+		}
+
+		// Handle right proposal
 	}
 </script>
 
@@ -45,7 +96,12 @@
 	<div class="value-to-send">
 		<div class="value-to-send-header">ETH to send:</div>
 
-		<input class="transaction-detail" type="text" bind:value={transaction.value} placeholder="420" />
+		<input
+			class="transaction-detail"
+			type="text"
+			bind:value={transaction.value}
+			placeholder="42.74"
+		/>
 	</div>
 
 	<div class="function-call">
@@ -54,14 +110,22 @@
 		<input
 			type="text"
 			class="transaction-detail"
-			bind:value={transaction.function}
+			bind:value={transaction.func}
 			placeholder="transfer(0x86693B6E574163505e9fDfC93A7ebBe48b71dE54, 12)"
 		/>
 	</div>
 {/each}
 
 <div class="button-holder">
-	<div class="add-button"><i class="material-icons">add_circle</i>&nbsp; add transaction</div>
+	<div class="add-button" on:click={addTransaction}>
+		<i class="material-icons">{buttonIcon}</i>&nbsp; {buttonText}
+	</div>
+	{#if propsalDetails.transactions.length > 1}
+		&nbsp; &nbsp;
+		<div class="add-button" on:click={removeTransaction}>
+			<i class="material-icons">remove_circle</i>&nbsp; remove
+		</div>
+	{/if}
 </div>
 
 <div class="description">
@@ -146,7 +210,7 @@
 		height: 110px;
 	}
 
-	.button-holder{
+	.button-holder {
 		position: relative;
 		top: 20px;
 		display: flex;
@@ -155,7 +219,7 @@
 		width: 100%;
 		margin-bottom: 20px;
 	}
-	.add-button{
+	.add-button {
 		padding: 1px 15px;
 		border-radius: 30px;
 		font-family: 'Poppins', sans-serif;
@@ -167,18 +231,17 @@
 		align-items: center;
 		cursor: pointer;
 	}
-	.add-button i{
+	.add-button i {
 		font-size: 35px;
 	}
-	.min-votes{
-		position: relative; 
-		top: -5px; 
-		color: #263238;
-		
-	}
-	.submit-proposal{
+	.min-votes {
 		position: relative;
-		top: -22px; 
+		top: -5px;
+		color: #263238;
+	}
+	.submit-proposal {
+		position: relative;
+		top: -22px;
 		left: 60%;
 		width: 40%;
 		height: 50px;
